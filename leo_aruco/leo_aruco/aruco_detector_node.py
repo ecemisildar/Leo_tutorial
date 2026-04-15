@@ -12,7 +12,7 @@ class LeoArucoDetector(Node):
     def __init__(self):
         super().__init__('leo_aruco_detector')
 
-        self.declare_parameter('image_topic', '/camera/color/image_raw')
+        self.declare_parameter('image_topic', '/camera/image_rect_color')
         self.declare_parameter('target_marker_id', 1)
         self.declare_parameter('window_name', 'Leo RGB Camera')
 

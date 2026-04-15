@@ -34,29 +34,39 @@ class LeoArucoDetector(Node):
         self.get_logger().info(f'Subscribed to image topic: {self.image_topic}')
         self.get_logger().info(f'Looking for ArUco marker id={self.target_marker_id}')
 
-    def image_callback(self, msg: CompressedImage) -> None:
-        compressed = np.frombuffer(msg.data, dtype=np.uint8)
-        gray_frame = cv2.imdecode(compressed, cv2.IMREAD_GRAYSCALE)
+    # def image_callback(self, msg: CompressedImage) -> None:
+    #     compressed = np.frombuffer(msg.data, dtype=np.uint8)
+    #     gray_frame = cv2.imdecode(compressed, cv2.IMREAD_GRAYSCALE)
 
-        if gray_frame is None:
-            self.get_logger().error('Failed to decode compressed image frame.')
+    #     if gray_frame is None:
+    #         self.get_logger().error('Failed to decode compressed image frame.')
+    #         return
+
+    #     corners, ids, _rejected = self.detect_markers(gray_frame)
+    #     detected_target = False
+
+    #     if ids is not None and len(ids) > 0:
+    #         for _marker_corners, marker_id in zip(corners, ids.flatten()):
+    #             if int(marker_id) != int(self.target_marker_id):
+    #                 continue
+
+    #             detected_target = True
+    #             break
+
+    #     if detected_target != self.last_detection_state:
+    #         status = 'detected' if detected_target else 'not detected'
+    #         self.get_logger().info(f'ArUco ID {self.target_marker_id}: {status}')
+    #         self.last_detection_state = detected_target
+            
+    def image_callback(self, msg):
+        compressed = np.frombuffer(msg.data, dtype=np.uint8)
+        gray = cv2.imdecode(compressed, cv2.IMREAD_GRAYSCALE)
+
+        if gray is None:
+            self.get_logger().error("decode failed")
             return
 
-        corners, ids, _rejected = self.detect_markers(gray_frame)
-        detected_target = False
-
-        if ids is not None and len(ids) > 0:
-            for _marker_corners, marker_id in zip(corners, ids.flatten()):
-                if int(marker_id) != int(self.target_marker_id):
-                    continue
-
-                detected_target = True
-                break
-
-        if detected_target != self.last_detection_state:
-            status = 'detected' if detected_target else 'not detected'
-            self.get_logger().info(f'ArUco ID {self.target_marker_id}: {status}')
-            self.last_detection_state = detected_target
+        self.get_logger().info_once(f"decode ok: {gray.shape}")
 
     def detect_markers(self, frame):
         if hasattr(cv2.aruco, 'ArucoDetector'):

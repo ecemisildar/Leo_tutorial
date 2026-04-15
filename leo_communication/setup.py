@@ -1,4 +1,5 @@
 from setuptools import setup
+import os
 
 package_name = 'leo_communication'
 
@@ -10,10 +11,14 @@ setup(
     zip_safe=True,
     maintainer='ecem',
     description='Simple robot communication',
+    data_files=[
+        ('share/ament_index/resource_index/packages', [os.path.join('resource', package_name)]),
+        (os.path.join('share', package_name), ['package.xml']),
+    ],
     entry_points={
         'console_scripts': [
             'sender = leo_communication.sender:main',
-            'receiver = leo_communication.receiver:main',
+            'receiver = leo_communication.reciever:main',
         ],
     },
 )

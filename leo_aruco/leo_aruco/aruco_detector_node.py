@@ -44,14 +44,10 @@ class LeoArucoDetector(Node):
             self.get_logger().info(f"decode ok: {gray.shape}")
             self._printed_decode_ok = True
 
-        self.get_logger().info("before detectMarkers")
-
         corners, ids, rejected = cv2.aruco.detectMarkers(
             gray,
             self.aruco_dictionary,
         )
-
-        self.get_logger().info("after detectMarkers")
 
         detected_target = False
         if ids is not None:

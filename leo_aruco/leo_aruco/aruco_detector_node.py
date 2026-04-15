@@ -66,7 +66,7 @@ class LeoArucoDetector(Node):
             self.get_logger().error("decode failed")
             return
 
-        self.get_logger().info_once(f"decode ok: {gray.shape}")
+        self.get_logger().info(f"decode ok: {gray.shape}")
 
     def detect_markers(self, frame):
         if hasattr(cv2.aruco, 'ArucoDetector'):

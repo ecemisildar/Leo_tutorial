@@ -1,16 +1,27 @@
+## Leo Tutorial
 This repository contains five ROS 2 packages to help familiarize you with the Leo rovers. 
 
 Follow the steps below to set up:
-First, create your workspace directory, e.g., ``leo_ws/src``
 
-Second, create your packages in the src or clone this repository using:
-```python
-git clone https://github.com/ecemisildar/Leo_tutorial.git
-```
+### 1. Create your workspace directory, e.g.,
 
-Third, ``colcon build`` or ``colcon build --packages-select "your_package_name"``
+``leo_ws/src``
 
-Last, source it using ``source install/setup.bash``
+### 2. Create your packages in the src or clone this repository using:
+
+``git clone https://github.com/ecemisildar/Leo_tutorial.git``
+
+### 3. Build the packages using:
+
+``colcon build`` 
+
+or 
+
+``colcon build --packages-select "your_package_name"``
+
+### 4. Source it using 
+
+``source install/setup.bash``
 
 ## [leo_teleop](leo_teleop)
 This package is to teleoperate the real rover using the keyboard:

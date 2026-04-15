@@ -1,5 +1,6 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -14,6 +15,7 @@ def generate_launch_description():
     y = LaunchConfiguration('y')
     z = LaunchConfiguration('z')
     yaw = LaunchConfiguration('yaw')
+    start_teleop = LaunchConfiguration('start_teleop')
 
     model_file = PathJoinSubstitution(
         [FindPackageShare('leo_description'), 'urdf', 'leo_sim.urdf.xacro']
@@ -75,11 +77,15 @@ def generate_launch_description():
         ],
     )
 
-    teleop = Node(
-        package='leo_teleop',
-        executable='leo_teleop_node',
+    teleop = ExecuteProcess(
+        condition=IfCondition(start_teleop),
+        cmd=[
+            'script',
+            '-qec',
+            'ros2 run leo_teleop leo_teleop_node',
+            '/dev/null',
+        ],
         output='screen',
-        emulate_tty=True,
     )
 
     return LaunchDescription(
@@ -91,6 +97,7 @@ def generate_launch_description():
             DeclareLaunchArgument('y', default_value='0.0'),
             DeclareLaunchArgument('z', default_value='0.2'),
             DeclareLaunchArgument('yaw', default_value='0.0'),
+            DeclareLaunchArgument('start_teleop', default_value='true'),
             gazebo,
             state_publisher,
             spawn_robot,

@@ -14,13 +14,11 @@ class LeoArucoDetector(Node):
 
         self.declare_parameter('image_topic', '/camera/image_rect_color')
         self.declare_parameter('target_marker_id', 1)
-        self.declare_parameter('window_name', 'Leo RGB Camera')
 
         self.image_topic = self.get_parameter('image_topic').get_parameter_value().string_value
         self.target_marker_id = (
             self.get_parameter('target_marker_id').get_parameter_value().integer_value
         )
-        self.window_name = self.get_parameter('window_name').get_parameter_value().string_value
 
         self.bridge = CvBridge()
         self.aruco_dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
@@ -43,7 +41,8 @@ class LeoArucoDetector(Node):
             self.get_logger().error(f'Failed to convert image: {exc}')
             return
 
-        corners, ids, _rejected = self.detect_markers(frame)
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        corners, ids, _rejected = self.detect_markers(gray_frame)
         detected_target = False
 
         if ids is not None and len(ids) > 0:
@@ -88,9 +87,6 @@ class LeoArucoDetector(Node):
             cv2.LINE_AA,
         )
 
-        cv2.imshow(self.window_name, frame)
-        cv2.waitKey(1)
-
     def detect_markers(self, frame):
         if hasattr(cv2.aruco, 'ArucoDetector'):
             detector = cv2.aruco.ArucoDetector(
@@ -110,10 +106,6 @@ class LeoArucoDetector(Node):
             return cv2.aruco.DetectorParameters()
 
         return cv2.aruco.DetectorParameters_create()
-
-    def destroy_node(self):
-        cv2.destroyAllWindows()
-        super().destroy_node()
 
 
 def main(args=None):

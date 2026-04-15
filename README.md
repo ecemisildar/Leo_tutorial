@@ -67,7 +67,7 @@ ros2 run leo_teleop leo_teleop_node
 This package is to detect an Aruco marker using the robot camera. 
 To run the package: 
 ```c
-ros2 run leo_aruco aruco_detector_node
+ros2 run leo_aruco aruco_detector
 ```
 
 ## [leo_common-ros2](https://github.com/LeoRover/leo_common-ros2)
